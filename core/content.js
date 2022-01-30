@@ -7,23 +7,12 @@ const updateListings = () => {
         if (card.getElementsByTagName("a")[0] !== undefined) {
             const address = card.getElementsByTagName("a")[0].textContent;
             //console.log(address)
-            getListingData(address);
-            card.getElementsByClassName("list-card-footer")[0].innerHTML = "Zarbail";
+            let testAddy = getListingData(address);
+            card.getElementsByClassName("list-card-footer")[0].innerHTML = testAddy;
+            card.getElementsByClassName("list-card-footer")[0].style['background-color'] = '#FF00FF';
         }
     }
 };
-
-//format all streets to be the same
-const cleanStreet = (street) => {
-    street = street.toUpperCase();
-    cleanUpTerms = ["APT", "#", "FLOOR", "PENTHOUSE", "TOWNHOUSE"];
-    for (term of cleanUpTerms) {
-        if (street.includes(term)) {
-            street = street.substring(0, street.indexOf(term))
-        }
-    }
-    return street
-}
 
 const getListingData = (address) => {
     //remove building name
@@ -37,8 +26,9 @@ const getListingData = (address) => {
     let [number, ...street] = addressBreakdown[0].split(" ");
     console.log("number:", number)
 
-    street = street.join(" ").replace(" ", "%20");
+    street = street.join(" ")
     street = cleanStreet(street)
+    //street = street.replace(" ", "%20");
 
     console.log("street:", street)
     let borough = addressBreakdown[1].trim();
@@ -46,12 +36,12 @@ const getListingData = (address) => {
     let stateAndZip = addressBreakdown[2].trim();
     console.log('stateZip:', stateAndZip);
 
-
+    return `${number} ${street} ${borough}`;
     //console.log(street);
 };
 
 const getViolationsData = (listings) => { };
 
-updateListings();
+updateListings(); //comment this out later
 
-//timer = setInterval(updateListings, 250);
+//timer = setInterval(updateListings, 250); //uncomment this out

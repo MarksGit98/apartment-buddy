@@ -10,7 +10,10 @@
         "http://*.zillow.com/*",
         "https://*.zillow.com/*"
       ],
-      "js": ["content.js"]
+      "js": [
+        "cleanStreet.js",
+        "content.js"
+      ]
     }
   ]
 }
