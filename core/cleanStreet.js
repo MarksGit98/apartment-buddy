@@ -1,3 +1,4 @@
+//formats the street names into what is usable for the api
 const cleanStreet = (street) => {
     street = street.toUpperCase();
     removeTerms = ["APT", "#", "FLOOR", "PENTHOUSE", "TOWNHOUSE"];
