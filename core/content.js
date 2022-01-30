@@ -33,10 +33,14 @@ const getListingData = (address) => {
     console.log("street:", street)
     let borough = addressBreakdown[1].trim();
     console.log("borough:", borough)
-    let stateAndZip = addressBreakdown[2].trim();
-    console.log('stateZip:', stateAndZip);
+    let stateAndZip = addressBreakdown[2].trim().split(' ');
+    let state = stateAndZip[0]
+    console.log('state:', state)
 
-    return `${number} ${street} ${borough}`;
+    //if (state !== 'NY') return 'You must be in NYC'
+
+    //return an object instead
+    return `${number} ${street} ${borough} ${state}`;
     //console.log(street);
 };
 
