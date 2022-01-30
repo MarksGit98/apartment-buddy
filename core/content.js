@@ -48,4 +48,4 @@ const getViolationsData = (listings) => { };
 
 updateListings(); //comment this out later
 
-//timer = setInterval(updateListings, 250); //uncomment this out
+//timer = setInterval(updateListings, 250); //uncomment this out after testing
