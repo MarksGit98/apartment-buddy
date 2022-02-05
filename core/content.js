@@ -1,26 +1,67 @@
 console.log("Chrome Extension Start");
 
-const updateListings = () => {
+const updateListings = async () => {
   let cards = document.getElementsByClassName("list-card-info");
   for (card of cards) {
-    console.log(card);
-    const address = card.getElementsByTagName("a")[0].textContent;
-    getListingData(address);
-    card.getElementsByClassName("list-card-footer")[0].innerHTML = "Zarbail";
+    const footer = card.getElementsByClassName("list-card-footer")[0].innerHTML;
+    if (
+      !(footer.includes("Violations") || footer.includes("Registration Data"))
+    ) {
+      if (card.getElementsByTagName("a")[0] !== undefined) {
+        const address = card.getElementsByTagName("a")[0].textContent;
+        //console.log(address)
+        let data = await getListingData(address, "open violations");
+        console.log(data);
+        let description = data
+          ? `Total Number of Open Violations: ${data.total}`
+          : "No Registration Data Available";
+        card.getElementsByClassName("list-card-footer")[0].innerHTML =
+          description;
+        card.getElementsByClassName("list-card-footer")[0].style[
+          "background-color"
+        ] = "#FF00FF";
+      }
+    }
   }
 };
-const getListingData = (address) => {
+
+const getListingData = async (address, type) => {
+  //remove building name
+  if (address.includes("|")) {
+    address = address.substring(address.indexOf("|") + 2);
+  }
+
   const addressBreakdown = address.split(",");
   let [number, ...street] = addressBreakdown[0].split(" ");
-  let borough = addressBreakdown[1].trim();
-  let stateAndZip = addressBreakdown[2].trim();
 
-  street = street.join(" ").replace(" ", "%20");
-  console.log(street);
-  const url = `https://whoownswhat.justfix.nyc/en/address/${borough}/${number}/${street}/summary`;
-  console.log(url);
+  street = street.join(" ");
+  street = cleanStreet(street);
+  street = street.replace(" ", "%20");
+  let borough = addressBreakdown[1].trim().toUpperCase();
+  let stateAndZip = addressBreakdown[2].trim().toUpperCase().split(" ");
+  let state = stateAndZip[0].toUpperCase();
+  //if (state !== 'NY') return 'You must be in NYC'
+  if (type === "open violations") {
+    data = await fetchAddressData({ number, street, borough, state });
+    if (data.length > 0) {
+      return getOpenViolations(data);
+    } else return undefined;
+  }
 };
 
-const getViolationsData = (listings) => {};
+const photoCards = document.getElementsByClassName("photo-cards")[0];
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((record) => {
+    console.log(record);
+    if (record.type === "") {
+    }
+  });
+});
+observer.observe(photoCards, {
+  attributes: true,
+  chidList: true,
+  subtree: true,
+});
 
-updateListings();
+updateListings(); //comment this out later
+setInterval(updateListings, 100); //uncomment this out after testing
