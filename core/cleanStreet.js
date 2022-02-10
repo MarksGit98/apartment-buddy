@@ -8,28 +8,60 @@ const cleanStreet = (street) => {
     }
   }
 
-  street = " " + street + " "; //add extra space for matching
-  if (street.includes(" PKWY ")) street = street.replace("PKWY ", " PARKWAY ");
-  if (street.includes(" AVE ")) street = street.replace(" AVE ", " AVENUE ");
-  if (street.includes(" ST ")) street = street.replace(" ST ", " STREET ");
-  if (street.includes(" BLV ")) street = street.replace(" BLV ", " BOULEVARD ");
-  if (street.includes(" RD ")) street = street.replace("RD", " ROAD ");
-  if (street.includes(" PL ")) street = street.replace(" PL ", " PLAZA ");
-  if (street.includes(" N ")) street = street.replace(" N ", " NORTH ");
-  if (street.includes(" S ")) street = street.replace(" S ", " SOUTH ");
-  if (street.includes(" E ")) street = street.replace(" E ", " EAST ");
-  if (street.includes(" W ")) street = street.replace(" W ", " WEST ");
-  if (street.includes("1ST")) street = street.replace("1ST", "1");
-  if (street.includes("2ND")) street = street.replace("2ND", "2");
-  if (street.includes("3RD")) street = street.replace("3RD", "3");
-  if (street.includes("4TH")) street = street.replace("4TH", "4");
-  if (street.includes("5TH")) street = street.replace("5TH", "5");
-  if (street.includes("6TH")) street = street.replace("6TH", "6");
-  if (street.includes("7TH")) street = street.replace("7TH", "7");
-  if (street.includes("8TH")) street = street.replace("8TH", "8");
-  if (street.includes("9TH")) street = street.replace("9TH", "9");
-  if (street.includes("0TH")) street = street.replace("0TH", "10");
-
-  street = street.trim(); //get rid of the extra space
+  const streetArray = street.split(" ");
+  for (let index = 0; index < streetArray.length; index++) {
+    streetArray[index] =
+      " " +
+      streetArray[index].replaceAll(".", "").replaceAll(",", "").trim() +
+      " "; //Remove all white space from front and back of each word
+    if (streetArray[index] === " PKWY ") streetArray[index] = "PARKWAY";
+    if (streetArray[index] === " AV " || streetArray[index] === " AVE ")
+      streetArray[index] = "AVENUE";
+    if (streetArray[index] === " ST " || streetArray[index] === " STR ")
+      streetArray[index] = "STREET";
+    if (streetArray[index] === " BLV " || streetArray[index] === " BLVD ")
+      streetArray[index] = "BOULEVARD";
+    if (streetArray[index] === "RD") streetArray[index] = "ROAD";
+    if (streetArray[index] === " PL ") streetArray[index] = "PLACE";
+    if (streetArray[index] === " PLZ ") streetArray[index] = "PLAZA";
+    if (streetArray[index] === " N " || streetArray[index] === " NO ")
+      streetArray[index] = "NORTH";
+    if (streetArray[index] === " S " || streetArray[index] === " SO ")
+      streetArray[index] = "SOUTH";
+    if (streetArray[index] === " E ") streetArray[index] = "EAST";
+    if (streetArray[index] === " W ") streetArray[index] = "WEST";
+    if (streetArray[index] === " 1ST " || streetArray[index] === " FIRST ")
+      streetArray[index] = "1";
+    if (streetArray[index] === " 2ND " || streetArray[index] === " SECOND ")
+      streetArray[index] = "2";
+    if (streetArray[index] === " 3RD " || streetArray[index] === " THIRD ")
+      streetArray[index] = "3";
+    if (streetArray[index] === " 4TH " || streetArray[index] === " FOURTH ")
+      streetArray[index] = "4";
+    if (streetArray[index] === " 5TH " || streetArray[index] === " FIFTH ")
+      streetArray[index] = "5";
+    if (streetArray[index] === " 6TH " || streetArray[index] === " SIXTH ")
+      streetArray[index] = "6";
+    if (streetArray[index] === " 7TH " || streetArray[index] === " SEVENTH ")
+      streetArray[index] = "7";
+    if (streetArray[index] === " 8TH " || streetArray[index] === " EIGHTH ")
+      streetArray[index] = "8";
+    if (streetArray[index] === " 9TH " || streetArray[index] === " NINTH ")
+      streetArray[index] = "9";
+    if (streetArray[index] === " 10TH " || streetArray[index] === " TENTH ")
+      streetArray[index] = "10";
+    if (streetArray[index] === " 11TH " || streetArray[index] === " ELEVENTH ")
+      streetArray[index] = "11";
+    if (streetArray[index].includes("TH") && /\d/.test(streetArray[index]))
+      streetArray[index] = streetArray[index].replaceAll("TH", "").trim();
+    if (streetArray[index].includes("RD") && /\d/.test(streetArray[index]))
+      streetArray[index] = streetArray[index].replaceAll("RD", "").trim();
+    if (streetArray[index].includes("ND") && /\d/.test(streetArray[index]))
+      streetArray[index] = streetArray[index].replaceAll("ND", "").trim();
+  }
+  for (let index = 0; index < streetArray.length; index++) {
+    streetArray[index] = streetArray[index].trim();
+  }
+  street = streetArray.join(" ").replaceAll(" ", "%20").trim();
   return street;
 };

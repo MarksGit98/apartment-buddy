@@ -2,16 +2,16 @@ console.log("Chrome Extension Start");
 
 const updateListings = async () => {
   let cards = document.getElementsByClassName("list-card-info");
-  for (card of cards) {
+  for (let card of cards) {
     const footer = card.getElementsByClassName("list-card-footer")[0].innerHTML;
     if (
       !(footer.includes("Violations") || footer.includes("Registration Data"))
     ) {
       if (card.getElementsByTagName("a")[0] !== undefined) {
         const address = card.getElementsByTagName("a")[0].textContent;
-        //console.log(address)
+
         let data = await getListingData(address, "open violations");
-        console.log(data);
+        console.log(address, data);
         let description = data
           ? `Total Number of Open Violations: ${data.total}`
           : "No Registration Data Available";
@@ -36,8 +36,7 @@ const getListingData = async (address, type) => {
 
   street = street.join(" ");
   street = cleanStreet(street);
-  street = street.replace(" ", "%20");
-  let borough = addressBreakdown[1].trim().toUpperCase();
+  let borough = cleanBorough(addressBreakdown[1]);
   let stateAndZip = addressBreakdown[2].trim().toUpperCase().split(" ");
   let state = stateAndZip[0].toUpperCase();
   //if (state !== 'NY') return 'You must be in NYC'
@@ -52,7 +51,6 @@ const getListingData = async (address, type) => {
 const photoCards = document.getElementsByClassName("photo-cards")[0];
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((record) => {
-    console.log(record);
     if (record.type === "") {
     }
   });
