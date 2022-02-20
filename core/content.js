@@ -77,4 +77,4 @@ observer.observe(photoCards, {
 });
 
 updateListings(); //comment this out later
-setInterval(updateListings, 5000); //uncomment this out after testing
+setInterval(updateListings, 100); //uncomment this out after testing
