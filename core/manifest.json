@@ -10,7 +10,14 @@
         "http://*.zillow.com/*",
         "https://*.zillow.com/*"
       ],
-      "js": ["APICalls.js", "cleanStreet.js", "cleanBorough.js", "content.js"]
+      "js": [
+        "components/infoBox.js",
+        "APICalls.js",
+        "cleanStreet.js",
+        "cleanBorough.js",
+        "content.js"
+      ],
+      "css": ["components/infoBox.css"]
     }
   ]
 }
