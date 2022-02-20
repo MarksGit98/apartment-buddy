@@ -1,30 +1,31 @@
 console.log("Chrome Extension Start");
 
 const updateListings = async () => {
-  // console.log("running");
-  // console.log(window.location.href);
-  // if (window.location.href.includes("homedetails")) {
-  //   console.log("check");
-  //   let homeDetails = document.getElementsByClassName(
-  //     "ds-home-details-chip"
-  //   )[0];
-  //   const address = homeDetails.getElementByID(
-  //     "ds-chip-property-address"
-  //   ).textContent;
-  //   console.log("address", address);
-  //   let data = await getListingData(address, "open violations");
-  //   const infoBox = generateInfoBox(data);
-  //   homeDetails.appendChild(infoBox);
-  // }
+  if (window.location.href.includes("homedetails")) {
+    let infoBoxArray = document.getElementsByClassName(
+      "hpd-infobox-homedetails"
+    );
+    if (infoBoxArray.length === 0) {
+      let homeDetails = document.getElementsByClassName(
+        "ds-home-details-chip"
+      )[0];
+      const address = document.getElementById(
+        "ds-chip-property-address"
+      ).textContent;
+      let data = await getListingData(address, "open violations");
+      const infoBox = generateInfoBox(data, "homedetails");
+      homeDetails.appendChild(infoBox);
+    }
+  }
   let cards = document.getElementsByClassName("list-card-info");
   for (let card of cards) {
     const footer = card.getElementsByClassName("list-card-footer")[0];
-    let infoBoxArray = card.getElementsByClassName("infobox");
+    let infoBoxArray = card.getElementsByClassName("hpd-infobox");
     if (infoBoxArray.length === 0) {
       if (card.getElementsByTagName("a")[0] !== undefined) {
         const address = card.getElementsByTagName("a")[0].textContent;
         let data = await getListingData(address, "open violations");
-        infoBox = generateInfoBox(data);
+        infoBox = generateInfoBox(data, "listing");
         footer.style["height"] = "60px";
         footer.appendChild(infoBox);
       }
@@ -76,4 +77,4 @@ observer.observe(photoCards, {
 });
 
 updateListings(); //comment this out later
-setInterval(updateListings, 100); //uncomment this out after testing
+setInterval(updateListings, 5000); //uncomment this out after testing

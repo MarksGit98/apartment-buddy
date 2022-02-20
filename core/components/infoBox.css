@@ -1,6 +1,10 @@
-.infobox {
+.hpd-infobox {
   height: 60px;
 }
-.infobox-line {
-  margin-bottom: 0px;
+.hpd-infobox-line {
+  margin-bottom: 0;
+}
+
+.hpd-infobox-homedetails {
+  height: 80px;
 }

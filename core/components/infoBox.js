@@ -1,11 +1,13 @@
-const generateInfoBox = (data) => {
+const generateInfoBox = (data, type) => {
   const infoBox = document.createElement("div");
-  infoBox.classList.add("infobox");
+  if (type === "listing") infoBox.classList.add("hpd-infobox");
+  else if (type === "homedetails")
+    infoBox.classList.add("hpd-infobox-homedetails");
   const totalOpenViolationsTag = document.createElement("p");
   const avgVioPerUnitTag = document.createElement("p");
 
-  totalOpenViolationsTag.classList.add("infobox-line");
-  avgVioPerUnitTag.classList.add("infobox-line");
+  totalOpenViolationsTag.classList.add("hpd-infobox-line");
+  avgVioPerUnitTag.classList.add("hpd-infobox-line");
 
   let description = data
     ? `Total Number of Open Violations: ${data.total}`
@@ -27,6 +29,5 @@ const generateInfoBox = (data) => {
     for (let listing in listings) {
     }
   }
-  console.log(infoBox);
   return infoBox;
 };
