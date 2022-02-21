@@ -1,0 +1,22 @@
+.hpd-infobox {
+  height: 60px;
+}
+.hpd-infobox-line {
+  margin-bottom: 0;
+}
+
+.hpd-infobox-homedetails {
+  height: 80px;
+}
+
+.severe {
+  background-color: red;
+}
+
+.warning {
+  background-color: yellow;
+}
+
+.okay {
+  background-color: green;
+}
