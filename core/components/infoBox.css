@@ -8,3 +8,15 @@
 .hpd-infobox-homedetails {
   height: 80px;
 }
+
+.severe {
+  background-color: red;
+}
+
+.warning {
+  background-color: yellow;
+}
+
+.okay {
+  background-color: green;
+}
