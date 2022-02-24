@@ -1,12 +1,20 @@
 .hpd-infobox {
   height: 60px;
+  position: absolute;
 }
 .hpd-infobox-line {
   margin-bottom: 0;
 }
+.hpd-infobox-container {
+  min-height: 80px;
+}
 
 .hpd-infobox-homedetails {
-  height: 80px;
+  min-height: 80px;
+}
+
+.infobox-extended {
+  height: 250px;
 }
 
 .severe {
@@ -19,4 +27,19 @@
 
 .okay {
   background-color: green;
+}
+
+.hpd-infobox-dropdown-window {
+  max-height: 200px;
+  position: absolute;
+  display: block;
+  background-color: white;
+  min-width: 300px;
+  box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 4px 12px;
+  overflow-y: scroll;
+}
+
+.hidden {
+  display: none;
 }

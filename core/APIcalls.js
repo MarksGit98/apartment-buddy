@@ -12,6 +12,34 @@ const fetchViolationData = async ({ number, street, borough, state }) => {
   return json;
 };
 
+const fetchComplaintCodeData = async ({ number, street, borough, state }) => {
+  let url = `https://data.cityofnewyork.us/resource/uwyv-629c.json?&housenumber=${number}&streetname=${street}&borough=${borough}`;
+  let response = await fetch(url);
+  let json = await response.json();
+
+  if (json.length === 0) {
+    //Try again without borough in parameters if API returns empty
+    url = `https://data.cityofnewyork.us/resource/uwyv-629c.json?&housenumber=${number}&streetname=${street}`;
+    response = await fetch(url);
+    json = await response.json();
+  }
+  return json;
+};
+
+fetchComplaintData = async ({ complaintID, date }) => {
+  let url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaintID}`;
+  let response = await fetch(url);
+  let json = await response.json();
+
+  if (json.length > 1) {
+    //Try again without borough in parameters if API returns empty
+    url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaintID}&statusdate=${date}`;
+    response = await fetch(url);
+    json = await response.json();
+  }
+  return json;
+};
+
 const fetchUnitData = async ({ number, street, borough, state }) => {
   if (borough === "MANHATTAN") {
     borough = "MN";
