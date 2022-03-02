@@ -24,7 +24,7 @@ const updateListings = async () => {
     if (infoBoxArray.length === 0) {
       if (card.getElementsByTagName("a")[0] !== undefined) {
         const address = card.getElementsByTagName("a")[0].textContent;
-        let data = await getListingData(address, "open violations");
+        let data = await getListingData(address, "open");
         footer.classList.add("hpd-infobox-container");
         infoBox = generateInfoBox(data, "listing", footer);
         footer.appendChild(infoBox);
@@ -44,22 +44,68 @@ const getListingData = async (address, type) => {
 
   street = street.join(" ");
   street = cleanStreet(street);
+  console.log(number, street);
+  const altStreet = await getFormattedStreet(number + " " + street);
   let borough = cleanBorough(addressBreakdown[1]);
   let stateAndZip = addressBreakdown[2].trim().toUpperCase().split(" ");
   let state = stateAndZip[0].toUpperCase();
   //if (state !== 'NY') return 'You must be in NYC'
-  if (type === "open violations") {
-    data = await fetchViolationData({ number, street, borough, state });
-    const units = await fetchUnitData({ number, street, borough, state });
-    if (data.length > 0) {
-      return getOpenViolations(data, units);
-    } else {
-      const altStreet = await getFormattedStreet(number + " " + street);
-      data = await fetchViolationData({ number, altStreet, borough, state });
-      if (data.length > 0) {
-        return getOpenViolations(data, units);
-      } else return undefined;
+  if (type === "open") {
+    const [violationsData, unitsData, complaintsData] = await Promise.all([
+      fetchViolationData({
+        number,
+        street,
+        borough,
+        state,
+      }),
+      fetchUnitData({ number, street, borough, state }),
+      fetchComplaintData({
+        number,
+        street,
+        borough,
+        state,
+      }),
+    ]);
+    //get violation data from API (try using alt street API for street name if original doesn't work)
+    if (violationsData.length === 0) {
+      violationsData = await fetchViolationData({
+        number,
+        altStreet,
+        borough,
+        state,
+      });
     }
+    //get unit data from API (try using alt street API for street name if original doesn't work)
+    if (unitsData.length === 0) {
+      unitsData = await fetchUnitData({ number, altStreet, borough, state });
+    }
+    //get complaint data from API (try using alt street API for street name if original doesn't work)
+    if (complaintsData.length === 0) {
+      complaintsData = await fetchComplaintData({
+        number,
+        altStreet,
+        borough,
+        state,
+      });
+    }
+    console.log(violationsData);
+    console.log(unitsData);
+    console.log(complaintsData);
+
+    let filteredViolationData;
+    let filteredComplaintData;
+
+    if (violationData.length > 0) {
+      filteredViolationData = filterOpenViolations(violationData, unitsData);
+    }
+    if (complaintData.length > 0) {
+      filteredComplaintData = filterOpenComplaints(complaintData, unitsData);
+    }
+    return {
+      violations: filteredViolationData,
+      complaints: filteredComplaintData,
+      units: unitsData,
+    };
   }
 };
 

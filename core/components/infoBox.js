@@ -9,6 +9,7 @@ const generateInfoBox = (data, type, footer) => {
   const dropDownWindow = document.createElement("div");
 
   if (data) {
+    console.log("data", data);
     dropDownWindow.innerHTML = data.listings;
     dropDownLine.innerHTML = `<a>Click here for more details ▶</a>`;
 

@@ -12,7 +12,8 @@ const fetchViolationData = async ({ number, street, borough, state }) => {
   return json;
 };
 
-const fetchComplaintCodeData = async ({ number, street, borough, state }) => {
+const fetchComplaintData = async ({ number, street, borough, state }) => {
+  //get ComplaintID and date via address
   let url = `https://data.cityofnewyork.us/resource/uwyv-629c.json?&housenumber=${number}&streetname=${street}&borough=${borough}`;
   let response = await fetch(url);
   let json = await response.json();
@@ -23,21 +24,32 @@ const fetchComplaintCodeData = async ({ number, street, borough, state }) => {
     response = await fetch(url);
     json = await response.json();
   }
+
+  const complaintID;
+  const date;
+  const complaintData = fetchComplaintCodeData({complaints: json})
   return json;
 };
 
-fetchComplaintData = async ({ complaintID, date }) => {
-  let url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaintID}`;
-  let response = await fetch(url);
-  let json = await response.json();
+fetchComplaintCodeData = async ({ complaints }) => {
+  const complaintData = complaints.reduce((array, complaint) => {
+    let url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}`;
+    let response = await fetch(url);
+    let json = await response.json();
 
-  if (json.length > 1) {
+    if (json.length !== 1) {  
     //Try again without borough in parameters if API returns empty
-    url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaintID}&statusdate=${date}`;
-    response = await fetch(url);
-    json = await response.json();
-  }
-  return json;
+      url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}&statusdate=${complaint.statusdate}`;
+      response = await fetch(url);
+      json = await response.json();
+    }
+    if (json.length > 0) {
+      array.push(json[0])
+    }
+    return array
+  }, [])
+
+  return complaintData;
 };
 
 const fetchUnitData = async ({ number, street, borough, state }) => {
@@ -60,12 +72,7 @@ const fetchUnitData = async ({ number, street, borough, state }) => {
   return json;
 };
 
-const getOpenViolations = (data, units) => {
-  let totalUnits = null;
-  if (units.length > 0) {
-    totalUnits = units[0].unitstotal;
-  }
-
+const filterOpenViolations = (data) => {
   const openViolationsOnly = data.filter(
     (listing) => listing.violationstatus === "Open"
   );
@@ -73,7 +80,25 @@ const getOpenViolations = (data, units) => {
   return {
     total: numberOfViolations,
     listings: openViolationsOnly,
-    totalUnits: totalUnits,
+  };
+};
+
+const getUnitTotal = (data) => {
+    let totalUnits = null;
+    if (data.length > 0) {
+      totalUnits = data[0].unitstotal;
+  }
+  return totalUnits;
+};
+
+const filterOpenComplaints = (data) => {
+    const openComplaintsOnly = data.filter(
+    (listing) => listing.status === "OPEN"
+  );
+  const numberOfComplaints = openComplaintsOnly.length;
+  return {
+    total: numberOfComplaints,
+    listings: openComplaintsOnly,
   };
 };
 

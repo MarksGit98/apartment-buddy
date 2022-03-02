@@ -12,7 +12,7 @@
       ],
       "js": [
         "components/infoBox.js",
-        "APICalls.js",
+        "APIcalls.js",
         "cleanStreet.js",
         "cleanBorough.js",
         "content.js"
