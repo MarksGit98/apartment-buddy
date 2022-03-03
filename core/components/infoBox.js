@@ -1,5 +1,5 @@
 const generateInfoBox = (data, type, footer) => {
-  footer.style.height = "100px";
+  if (footer) footer.style.height = "100px";
   const infoBox = document.createElement("div");
   if (type === "listing") infoBox.classList.add("hpd-infobox");
   else if (type === "homedetails")
@@ -71,7 +71,7 @@ const generateInfoBox = (data, type, footer) => {
     infoBox.appendChild(totalOpenViolationsTag);
     infoBox.appendChild(totalOpenComplaintsTag);
     infoBox.appendChild(avgVioPerUnitTag);
-    infoBox.appendChild(dropDownLine);
+    if (footer) infoBox.appendChild(dropDownLine);
   }
   return infoBox;
 };
