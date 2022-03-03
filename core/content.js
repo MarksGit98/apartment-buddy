@@ -1,5 +1,6 @@
 console.log("Chrome Extension Start");
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
 const updateListings = async () => {
   if (window.location.href.includes("homedetails")) {
     let infoBoxArray = document.getElementsByClassName(
@@ -12,8 +13,8 @@ const updateListings = async () => {
       const address = document.getElementById(
         "ds-chip-property-address"
       ).textContent;
-      let data = await getListingData(address, "open violations");
-      const infoBox = generateInfoBox(data, "homedetails");
+      let data = await getListingData(address, "open");
+      const infoBox = generateInfoBox(data, "homedetails", null);
       homeDetails.appendChild(infoBox);
     }
   }
@@ -51,7 +52,7 @@ const getListingData = async (address, type) => {
   let state = stateAndZip[0].toUpperCase();
   //if (state !== 'NY') return 'You must be in NYC'
   if (type === "open") {
-    const [violationsData, unitsData, complaintsData] = await Promise.all([
+    let [violationsData, unitsDataArray, complaintsData] = await Promise.all([
       fetchViolationData({
         number,
         street,
@@ -76,8 +77,13 @@ const getListingData = async (address, type) => {
       });
     }
     //get unit data from API (try using alt street API for street name if original doesn't work)
-    if (unitsData.length === 0) {
-      unitsData = await fetchUnitData({ number, altStreet, borough, state });
+    if (unitsDataArray.length === 0) {
+      unitsDataArray = await fetchUnitData({
+        number,
+        altStreet,
+        borough,
+        state,
+      });
     }
     //get complaint data from API (try using alt street API for street name if original doesn't work)
     if (complaintsData.length === 0) {
@@ -88,19 +94,24 @@ const getListingData = async (address, type) => {
         state,
       });
     }
-    console.log(violationsData);
-    console.log(unitsData);
-    console.log(complaintsData);
 
     let filteredViolationData;
     let filteredComplaintData;
+    let unitsData;
 
-    if (violationData.length > 0) {
-      filteredViolationData = filterOpenViolations(violationData, unitsData);
+    if (violationsData.length > 0) {
+      filteredViolationData = filterOpenViolations(violationsData, unitsData);
+      console.log(filteredViolationData);
     }
-    if (complaintData.length > 0) {
-      filteredComplaintData = filterOpenComplaints(complaintData, unitsData);
+    if (complaintsData.length > 0) {
+      filteredComplaintData = filterOpenComplaints(complaintsData, unitsData);
+      console.log(filteredComplaintData);
     }
+
+    if (unitsDataArray.length > 0) {
+      unitsData = unitsDataArray[0];
+    }
+
     return {
       violations: filteredViolationData,
       complaints: filteredComplaintData,

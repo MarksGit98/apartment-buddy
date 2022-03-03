@@ -25,29 +25,33 @@ const fetchComplaintData = async ({ number, street, borough, state }) => {
     json = await response.json();
   }
 
-  const complaintID;
-  const date;
-  const complaintData = fetchComplaintCodeData({complaints: json})
+  //const complaintID;
+  //const date;
+  //const complaintData = fetchComplaintCodeData({complaints: json})
   return json;
 };
 
-fetchComplaintCodeData = async ({ complaints }) => {
-  const complaintData = complaints.reduce((array, complaint) => {
-    let url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}`;
-    let response = await fetch(url);
-    let json = await response.json();
+const fetchComplaintCodeData = async ({ complaints }) => {
+  const array = [];
 
-    if (json.length !== 1) {  
-    //Try again without borough in parameters if API returns empty
-      url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}&statusdate=${complaint.statusdate}`;
-      response = await fetch(url);
-      json = await response.json();
-    }
-    if (json.length > 0) {
-      array.push(json[0])
-    }
-    return array
-  }, [])
+  const complaintData = Promise.all(
+    complaints.map(async (complaint) => {
+      let url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}`;
+      let response = await fetch(url);
+      let json = await response.json();
+
+      if (json.length !== 1) {
+        //Try again without borough in parameters if API returns empty
+        url = `https://data.cityofnewyork.us/resource/a2nx-4u46.json?&complaintid=${complaint.complaintid}&statusdate=${complaint.statusdate}`;
+        response = await fetch(url);
+        json = await response.json();
+      }
+      if (json.length > 0) {
+        array.push(json[0]);
+      }
+      return array;
+    })
+  );
 
   return complaintData;
 };
@@ -84,15 +88,15 @@ const filterOpenViolations = (data) => {
 };
 
 const getUnitTotal = (data) => {
-    let totalUnits = null;
-    if (data.length > 0) {
-      totalUnits = data[0].unitstotal;
+  let totalUnits = null;
+  if (data.length > 0) {
+    totalUnits = data[0].unitstotal;
   }
   return totalUnits;
 };
 
 const filterOpenComplaints = (data) => {
-    const openComplaintsOnly = data.filter(
+  const openComplaintsOnly = data.filter(
     (listing) => listing.status === "OPEN"
   );
   const numberOfComplaints = openComplaintsOnly.length;
