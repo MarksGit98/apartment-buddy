@@ -1,16 +1,37 @@
-.hpd-infobox {
-  height: 60px;
-  position: absolute;
+.symbol {
+  width: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.hpd-info {
+  flex: 4;
+}
+
+.symbol-box {
+  align-content: center;
+  flex: 1;
+}
+
+.hpd-infobox {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+}
+
 .hpd-infobox-line {
   margin-bottom: 0;
 }
+
 .hpd-infobox-container {
-  min-height: 80px;
+  margin-top: 10px;
+  min-height: 100px;
+  border: 1px solid black;
 }
 
 .hpd-infobox-homedetails {
-  min-height: 80px;
+  min-height: 90px;
 }
 
 .infobox-extended {

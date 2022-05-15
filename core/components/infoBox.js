@@ -8,13 +8,13 @@ const generateInfoBox = (data, type, footer) => {
   const totalOpenViolationsTag = document.createElement("p");
   const totalOpenComplaintsTag = document.createElement("p");
   const avgVioPerUnitTag = document.createElement("p");
-
+  const hpdInfo = document.createElement("div");
   const dropDownLine = document.createElement("div");
   const dropDownWindow = document.createElement("div");
   if (data) {
     dropDownWindow.innerHTML = data.violations ? data.violations.listings : "";
     dropDownLine.innerHTML = `<a>Click here for more details ▶</a>`;
-
+    hpdInfo.classList.add("hpd-info");
     dropDownWindow.classList.add("hpd-infobox-dropdown-window");
     dropDownWindow.classList.add("hidden");
     totalOpenViolationsTag.classList.add("hpd-infobox-line");
@@ -55,23 +55,35 @@ const generateInfoBox = (data, type, footer) => {
       const averageUnits = parseFloat(
         data.violations.total / data.units.unitstotal
       ).toFixed(1);
+      const symbolBox = document.createElement("div");
+      const symbol = document.createElement("img");
+      symbolBox.appendChild(symbol);
+      symbolBox.classList.add("symbol-box");
+      symbol.classList.add("symbol");
+
       const averageUnitsText = `Average Violations per unit: ${averageUnits}`;
       let color;
       if (averageUnits > 1.0) {
         color = "severe";
+        symbol.src = chrome.runtime.getURL("assets/severe.png");
+        symbol.setAttribute("alt", "../assets/severe.png");
       } else if (averageUnits >= 0.5) {
         color = "warning";
+        symbol.src = chrome.runtime.getURL("assets/warning.png");
       } else {
         color = "okay";
       }
-      infoBox.classList.add(color);
+      hpdInfo.classList.add(color);
+      infoBox.appendChild(symbolBox);
       avgVioPerUnitTag.innerHTML = averageUnitsText;
     }
 
-    infoBox.appendChild(totalOpenViolationsTag);
-    infoBox.appendChild(totalOpenComplaintsTag);
-    infoBox.appendChild(avgVioPerUnitTag);
-    if (footer) infoBox.appendChild(dropDownLine);
+    hpdInfo.appendChild(totalOpenViolationsTag);
+    hpdInfo.appendChild(totalOpenComplaintsTag);
+    hpdInfo.appendChild(avgVioPerUnitTag);
+    if (footer) hpdInfo.appendChild(dropDownLine);
+    infoBox.appendChild(hpdInfo);
   }
+
   return infoBox;
 };

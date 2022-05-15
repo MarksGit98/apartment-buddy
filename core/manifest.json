@@ -17,7 +17,13 @@
         "cleanBorough.js",
         "content.js"
       ],
-      "css": ["components/infoBox.css"]
+      "css": ["components/infoBox.css"],
+      "web_accessible_resources": [
+        {
+          "matches": ["<all_urls>"],
+          "resources": ["assets/severe.png", "assets/warning.png"]
+        }
+      ]
     }
   ]
 }
