@@ -4,7 +4,7 @@ const generateInfoBox = (data, type, footer) => {
   if (type === "listing") infoBox.classList.add("hpd-infobox");
   else if (type === "homedetails")
     infoBox.classList.add("hpd-infobox-homedetails");
-
+  console.log(type);
   const totalOpenViolationsTag = document.createElement("p");
   const totalOpenComplaintsTag = document.createElement("p");
   const avgVioPerUnitTag = document.createElement("p");
@@ -12,7 +12,17 @@ const generateInfoBox = (data, type, footer) => {
   const dropDownLine = document.createElement("div");
   const dropDownWindow = document.createElement("div");
   if (data) {
-    dropDownWindow.innerHTML = data.violations ? data.violations.listings : "";
+    console.log(data.violations ? data.violations.listings : "no vio data");
+    if (data.violations) {
+      const violationListings = document.createElement("ul");
+      for (let i = 1; i <= data.violations.listings.length; i++) {
+        violationListings.innerHTML += `<li><b>${i}.</b> ${
+          data.violations.listings[i - 1].novdescription
+        }</li>`;
+      }
+      dropDownWindow.appendChild(violationListings);
+    }
+
     dropDownLine.innerHTML = `<a>Click here for more details ▶</a>`;
     hpdInfo.classList.add("hpd-info");
     dropDownWindow.classList.add("hpd-infobox-dropdown-window");
@@ -42,39 +52,38 @@ const generateInfoBox = (data, type, footer) => {
     avgVioPerUnitTag.classList.add("hpd-infobox-line");
 
     let violationsDescription = data.violations
-      ? `Total Number of Open Violations: ${data.violations.total}`
+      ? `Total # of Open Violations: ` + data.violations.total.toString().bold()
       : "No Violations Data Available";
     totalOpenViolationsTag.innerHTML = violationsDescription;
 
     let complaintsDescription = data.complaints
-      ? `Total Number of Open Complaints: ${data.complaints.total}`
+      ? `Total # of Open Complaints: ` + data.complaints.total.toString().bold()
       : "No Complaints Data Available";
     totalOpenComplaintsTag.innerHTML = complaintsDescription;
+
+    infoBox.appendChild(hpdInfo);
 
     if (data && data.violations && data.units && data.units.unitstotal) {
       const averageUnits = parseFloat(
         data.violations.total / data.units.unitstotal
       ).toFixed(1);
+      hpdInfo.classList.add("data-found");
+      infoBox.classList.add("data-found");
       const symbolBox = document.createElement("div");
-      const symbol = document.createElement("img");
+      const symbol = document.createElement("h1");
       symbolBox.appendChild(symbol);
       symbolBox.classList.add("symbol-box");
       symbol.classList.add("symbol");
 
-      const averageUnitsText = `Average Violations per unit: ${averageUnits}`;
-      let color;
+      const averageUnitsText =
+        `Average Violations per unit: ` + averageUnits.toString().bold();
       if (averageUnits > 1.0) {
-        color = "severe";
-        symbol.src = chrome.runtime.getURL("assets/severe.png");
-        symbol.setAttribute("alt", "../assets/severe.png");
+        symbol.innerHTML = "⛔";
+        infoBox.appendChild(symbolBox);
       } else if (averageUnits >= 0.5) {
-        color = "warning";
-        symbol.src = chrome.runtime.getURL("assets/warning.png");
-      } else {
-        color = "okay";
+        symbol.innerHTML = "⚠️";
+        infoBox.appendChild(symbolBox);
       }
-      hpdInfo.classList.add(color);
-      infoBox.appendChild(symbolBox);
       avgVioPerUnitTag.innerHTML = averageUnitsText;
     }
 
@@ -82,7 +91,6 @@ const generateInfoBox = (data, type, footer) => {
     hpdInfo.appendChild(totalOpenComplaintsTag);
     hpdInfo.appendChild(avgVioPerUnitTag);
     if (footer) hpdInfo.appendChild(dropDownLine);
-    infoBox.appendChild(hpdInfo);
   }
 
   return infoBox;

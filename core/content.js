@@ -20,6 +20,7 @@ const updateListings = async () => {
   }
   let cards = document.getElementsByClassName("list-card-info");
   for (let card of cards) {
+    card.classList.add("card");
     const footer = card.getElementsByClassName("list-card-footer")[0];
     let infoBoxArray = card.getElementsByClassName("hpd-infobox");
     if (infoBoxArray.length === 0) {
