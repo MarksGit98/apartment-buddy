@@ -25,9 +25,6 @@ const fetchComplaintData = async ({ number, street, borough, state }) => {
     json = await response.json();
   }
 
-  //const complaintID;
-  //const date;
-  //const complaintData = fetchComplaintCodeData({complaints: json})
   return json;
 };
 

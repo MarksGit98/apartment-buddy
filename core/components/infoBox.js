@@ -16,14 +16,14 @@ const generateInfoBox = (data, type, footer) => {
     if (data.violations) {
       const violationListings = document.createElement("ul");
       for (let i = 1; i <= data.violations.listings.length; i++) {
-        violationListings.innerHTML += `<li><b>${i}.</b> ${
+        violationListings.innerHTML += `<li class="dropdown-list-item"><b>${i}.</b> ${
           data.violations.listings[i - 1].novdescription
         }</li>`;
       }
       dropDownWindow.appendChild(violationListings);
     }
 
-    dropDownLine.innerHTML = `<a>Click here for more details ▶</a>`;
+    dropDownLine.innerHTML = `<a>Click here to see all open violations ▶</a>`;
     hpdInfo.classList.add("hpd-info");
     dropDownWindow.classList.add("hpd-infobox-dropdown-window");
     dropDownWindow.classList.add("hidden");
@@ -35,14 +35,12 @@ const generateInfoBox = (data, type, footer) => {
     dropDownLine.addEventListener("click", () => {
       if (dropDownWindow.classList.contains("hidden")) {
         dropDownWindow.classList.remove("hidden");
-        dropDownLine.innerHTML = `<a>Click here for more details ▼</a>`;
+        dropDownLine.innerHTML = `<a>Click here to see all open violations ▼</a>`;
         dropDownLine.append(dropDownWindow);
-        footer.style.height = "250px";
         // footer.style["min-height"] = "270px";
       } else {
-        dropDownLine.innerHTML = `<a>Click here for more details ▶</a>`;
+        dropDownLine.innerHTML = `<a>Click here to see all open violations ▶</a>`;
         dropDownWindow.classList.add("hidden");
-        footer.style.height = "100px";
         // footer.style["min-height"] = "30px";
       }
     });
@@ -63,28 +61,32 @@ const generateInfoBox = (data, type, footer) => {
 
     infoBox.appendChild(hpdInfo);
 
-    if (data && data.violations && data.units && data.units.unitstotal) {
-      const averageUnits = parseFloat(
-        data.violations.total / data.units.unitstotal
-      ).toFixed(1);
-      hpdInfo.classList.add("data-found");
-      infoBox.classList.add("data-found");
-      const symbolBox = document.createElement("div");
-      const symbol = document.createElement("h1");
-      symbolBox.appendChild(symbol);
-      symbolBox.classList.add("symbol-box");
-      symbol.classList.add("symbol");
+    if (data.violations) {
+      if (data.units && data.units.unitstotal) {
+        const averageUnits = parseFloat(
+          data.violations.total / data.units.unitstotal
+        ).toFixed(1);
+        hpdInfo.classList.add("data-found");
+        infoBox.classList.add("data-found");
+        const symbolBox = document.createElement("div");
+        const symbol = document.createElement("h1");
+        symbolBox.appendChild(symbol);
+        symbolBox.classList.add("symbol-box");
+        symbol.classList.add("symbol");
 
-      const averageUnitsText =
-        `Average Violations per unit: ` + averageUnits.toString().bold();
-      if (averageUnits > 1.0) {
-        symbol.innerHTML = "⛔";
-        infoBox.appendChild(symbolBox);
-      } else if (averageUnits >= 0.5) {
-        symbol.innerHTML = "⚠️";
-        infoBox.appendChild(symbolBox);
+        const averageUnitsText =
+          `Average Violations per unit: ` + averageUnits.toString().bold();
+        if (averageUnits > 1.0) {
+          symbol.innerHTML = "⛔";
+          infoBox.appendChild(symbolBox);
+        } else if (averageUnits >= 0.5) {
+          symbol.innerHTML = "⚠️";
+          infoBox.appendChild(symbolBox);
+        }
+        avgVioPerUnitTag.innerHTML = averageUnitsText;
+      } else {
+        avgVioPerUnitTag.innerHTML = "No Unit # Data Available";
       }
-      avgVioPerUnitTag.innerHTML = averageUnitsText;
     }
 
     hpdInfo.appendChild(totalOpenViolationsTag);
