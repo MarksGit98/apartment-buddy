@@ -4,7 +4,6 @@ const generateInfoBox = (data, type, footer) => {
   if (type === "listing") infoBox.classList.add("hpd-infobox");
   else if (type === "homedetails")
     infoBox.classList.add("hpd-infobox-homedetails");
-  console.log(type);
   const totalOpenViolationsTag = document.createElement("p");
   const totalOpenComplaintsTag = document.createElement("p");
   const avgVioPerUnitTag = document.createElement("p");
@@ -12,13 +11,20 @@ const generateInfoBox = (data, type, footer) => {
   const dropDownLine = document.createElement("div");
   const dropDownWindow = document.createElement("div");
   if (data) {
-    console.log(data.violations ? data.violations.listings : "no vio data");
     if (data.violations) {
       const violationListings = document.createElement("ul");
+      const splitWords = ["CODE", "ADM", ":", "HMC"];
       for (let i = 1; i <= data.violations.listings.length; i++) {
-        violationListings.innerHTML += `<li class="dropdown-list-item"><b>${i}.</b> ${
-          data.violations.listings[i - 1].novdescription
-        }</li>`;
+        const date = data.violations.listings[i - 1].novissueddate?.slice(0, 7);
+        let description = data.violations.listings[i - 1].novdescription;
+        for (const word of splitWords) {
+          if (description.indexOf(word) > -1) {
+            [_, description] = description.split(word);
+            description = description.trim();
+            break;
+          }
+        }
+        violationListings.innerHTML += `<li class="dropdown-list-item"><b>${i}.</b> (${date}) ${description}</li>`;
       }
       dropDownWindow.appendChild(violationListings);
     }
@@ -62,9 +68,10 @@ const generateInfoBox = (data, type, footer) => {
     infoBox.appendChild(hpdInfo);
 
     if (data.violations) {
-      if (data.units && data.units.unitstotal) {
+      if (data.units && (data.units.unitstotal ?? data.units.total_units)) {
+        total_units = data.units.unitstotal ?? data.units.total_units;
         const averageUnits = parseFloat(
-          data.violations.total / data.units.unitstotal
+          data.violations.total / total_units
         ).toFixed(1);
         hpdInfo.classList.add("data-found");
         infoBox.classList.add("data-found");

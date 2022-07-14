@@ -7,12 +7,8 @@ const updateListings = async () => {
       "hpd-infobox-homedetails"
     );
     if (infoBoxArray.length === 0) {
-      let homeDetails = document.getElementsByClassName(
-        "ds-home-details-chip"
-      )[0];
-      const address = document.getElementById(
-        "ds-chip-property-address"
-      ).textContent;
+      let homeDetails = document.getElementsByClassName("ds-chip")[0];
+      const address = document.getElementsByTagName("h1")[0]?.textContent;
       let data = await getListingData(address, "open");
       const infoBox = generateInfoBox(data, "homedetails", null);
       homeDetails.appendChild(infoBox);
@@ -46,7 +42,6 @@ const getListingData = async (address, type) => {
 
   street = street.join(" ");
   street = cleanStreet(street);
-  console.log(number, street);
   const altStreet = await getFormattedStreet(number + " " + street);
   let borough = cleanBorough(addressBreakdown[1]);
   let stateAndZip = addressBreakdown[2].trim().toUpperCase().split(" ");
@@ -102,11 +97,9 @@ const getListingData = async (address, type) => {
 
     if (violationsData.length > 0) {
       filteredViolationData = filterOpenViolations(violationsData, unitsData);
-      console.log(filteredViolationData);
     }
     if (complaintsData.length > 0) {
       filteredComplaintData = filterOpenComplaints(complaintsData, unitsData);
-      console.log(filteredComplaintData);
     }
 
     if (unitsDataArray.length > 0) {

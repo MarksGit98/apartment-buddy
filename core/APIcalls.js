@@ -64,12 +64,19 @@ const fetchUnitData = async ({ number, street, borough, state }) => {
     borough = "QN";
   } else if (borough === "STATEN ISLAND") {
     borough = "SI";
-  }
+  } else borough = "QN";
   let url = `https://data.cityofnewyork.us/resource/64uk-42ks.json?address=${
     number + "%20" + street
   }&borough=${borough}`;
   let response = await fetch(url);
   let json = await response.json();
+  if (json.length === 0) {
+    url = `https://data.cityofnewyork.us/resource/hg8x-zxpr.json?project_name=${
+      number + "%20" + street
+    }`;
+    response = await fetch(url);
+    json = await response.json();
+  }
   return json;
 };
 
